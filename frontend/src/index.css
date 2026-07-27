@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 220 33% 97%; /* #F5F7FB */
+  --foreground: 221 68% 18%; /* #0F234F */
+  --card: 0 0% 100%; /* #FFFFFF */
+  --border: 213 27% 88%; /* #D8E0EA */
+  --muted: 220 33% 94%;
+  --muted-foreground: 213 13% 43%; /* #5F6C7B */
+  --primary: 221 100% 59%; /* #2F6BFF */
+  --primary-foreground: 0 0% 100%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8E0EA;
+  border-radius: 999px;
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid #2F6BFF;
+}
+
+/* PayTrack Logo Gradient: teal → blue → purple */
+.text-gradient-paytrack {
+  background: linear-gradient(90deg, #15C7B8 0%, #2F6BFF 55%, #6C3BFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-paytrack {
+  background: linear-gradient(90deg, #15C7B8 0%, #2F6BFF 55%, #6C3BFF 100%);
+}
+
+/* Login Page Black Grid Background with crisp visible grid & subtle glow */
+.login-background {
+  background-color: #0A0D14;
+  background-image: 
+    linear-gradient(rgba(45, 107, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 107, 255, 0.22) 1px, transparent 1px);
+  background-size: 40px 40px;
+  position: relative;
+}
+
+.login-background::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(45, 107, 255, 0.25) 0%, rgba(21, 199, 184, 0.12) 40%, transparent 70%);
+  pointer-events: none;
+}

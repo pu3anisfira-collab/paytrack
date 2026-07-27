@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+.env
+!.env.example
+uploads/receipts/*
+uploads/imports/*
+!uploads/receipts/.gitkeep
+!uploads/imports/.gitkeep
+*.log
+.DS_Store

@@ -1,0 +1,157 @@
+// Petronas Claim & Expenses Tracking System
+// Prisma schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  staff
+  manager
+}
+
+// PaymentMode is stored as a plain String to support evolving Malaysian payment methods.
+// Valid values are managed in the application layer (see paymentMethods.ts / PAYMENT_MODES array).
+// Legacy values: Cash, Online, M2U, CreditCard, ShopeePay, Epay (kept for backward compat)
+
+
+enum TransactionSource {
+  tng_import
+  staff_manual
+  manager_manual
+}
+
+enum TransactionStatus {
+  draft
+  completed
+  archived
+}
+
+enum ImportStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum FieldType {
+  text
+  number
+  date
+  textarea
+  select
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(staff)
+  fullName     String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions   Transaction[] @relation("TransactionOwner")
+  createdTxns    Transaction[] @relation("TransactionCreator")
+  importBatches  ImportBatch[]
+
+  @@map("users")
+}
+
+model Category {
+  id           String     @id @default(uuid())
+  name         String
+  parentId     String?
+  parent       Category?  @relation("CategoryChildren", fields: [parentId], references: [id])
+  children     Category[] @relation("CategoryChildren")
+  isActive     Boolean    @default(true)
+  displayOrder Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  fields       CategoryField[]
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model CategoryField {
+  id           String    @id @default(uuid())
+  categoryId   String
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  fieldName    String
+  fieldKey     String
+  fieldType    FieldType @default(text)
+  isRequired   Boolean   @default(false)
+  displayOrder Int       @default(0)
+  placeholder  String?
+  options      Json?
+
+  @@map("category_fields")
+}
+
+model Transaction {
+  id            String             @id @default(uuid())
+  userId        String
+  user          User               @relation("TransactionOwner", fields: [userId], references: [id])
+  date          DateTime
+  description   String
+  paymentMode   String             // e.g. 'TNG', 'DuitNow', 'Cash', 'Visa'
+  amount        Decimal            @db.Decimal(12, 2)
+  categoryId    String?
+  category      Category?          @relation(fields: [categoryId], references: [id])
+  receiptPath   String?
+  source        TransactionSource
+  status        TransactionStatus @default(draft)
+  remarks       String?
+  importBatchId String?
+  importBatch   ImportBatch?       @relation(fields: [importBatchId], references: [id])
+  createdBy     String
+  creator       User               @relation("TransactionCreator", fields: [createdBy], references: [id])
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  extras TransactionExtra[]
+
+  @@index([date])
+  @@index([categoryId])
+  @@index([source])
+  @@map("transactions")
+}
+
+model TransactionExtra {
+  id            String      @id @default(uuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  fieldKey      String
+  fieldValue    String
+  fieldType     FieldType
+  createdAt     DateTime    @default(now())
+
+  @@map("transaction_extras")
+}
+
+model ImportBatch {
+  id            String       @id @default(uuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  fileName      String
+  filePath      String
+  totalRecords  Int          @default(0)
+  importedCount Int          @default(0)
+  status        ImportStatus @default(pending)
+  errorLog      String?
+  createdAt     DateTime     @default(now())
+
+  transactions Transaction[]
+
+  @@map("import_batches")
+}
