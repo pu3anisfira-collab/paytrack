@@ -16,11 +16,41 @@ const dashboardRoutes = require('./api/dashboard/routes');
 const app = express();
 
 const PORT = process.env.PORT || config.port || 4000;
-const corsOrigin = config.frontendUrl && config.frontendUrl.includes(',')
-  ? config.frontendUrl.split(',').map((url) => url.trim())
-  : config.frontendUrl || true;
 
-app.use(cors({ origin: corsOrigin, credentials: true }));
+// Format CORS origins cleanly (ensures https:// scheme is present)
+function formatOrigin(url) {
+  if (!url) return '*';
+  const trimmed = url.trim();
+  if (trimmed === '*' || trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+}
+
+const rawFrontend = config.frontendUrl || '*';
+const allowedOrigins = rawFrontend.includes(',')
+  ? rawFrontend.split(',').map(formatOrigin)
+  : formatOrigin(rawFrontend);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile, server-to-server, curl)
+      if (!origin || allowedOrigins === '*') return callback(null, true);
+      const isAllowed = Array.isArray(allowedOrigins)
+        ? allowedOrigins.includes(origin)
+        : allowedOrigins === origin;
+      if (isAllowed) return callback(null, true);
+      // Auto-allow vercel deployment subdomains and localhost
+      if (origin.endsWith('.vercel.app') || origin.includes('localhost')) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiLimiter);
