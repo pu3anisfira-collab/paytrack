@@ -15,7 +15,12 @@ const dashboardRoutes = require('./api/dashboard/routes');
 
 const app = express();
 
-app.use(cors({ origin: config.frontendUrl, credentials: true }));
+const PORT = process.env.PORT || config.port || 4000;
+const corsOrigin = config.frontendUrl && config.frontendUrl.includes(',')
+  ? config.frontendUrl.split(',').map((url) => url.trim())
+  : config.frontendUrl || true;
+
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiLimiter);
@@ -35,8 +40,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use((req, res) => res.status(404).json({ error: 'Route not found.' }));
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-  console.log(`Petronas Tracker API listening on port ${config.port} [${config.nodeEnv}]`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`PayTrack API listening on port ${PORT} [${config.nodeEnv}]`);
 });
 
 module.exports = app;
