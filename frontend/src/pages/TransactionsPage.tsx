@@ -115,23 +115,38 @@ export function TransactionsPage() {
       </div>
 
       <Card>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4">
-          <Select className="w-full" value={categoryId} onChange={(e) => { setPage(1); setCategoryId(e.target.value); }}>
-            <option value="">All categories</option>
-            {flatCategories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-          <Select className="w-full" value={source} onChange={(e) => { setPage(1); setSource(e.target.value); }}>
-            <option value="">All sources</option>
-            <option value="tng_import">TNG Import</option>
-            <option value="staff_manual">Staff Manual</option>
-            <option value="manager_manual">Manager Manual</option>
-          </Select>
-          <Input type="date" className="w-full" value={dateFrom} onChange={(e) => { setPage(1); setDateFrom(e.target.value); }} />
-          <Input type="date" className="w-full" value={dateTo} onChange={(e) => { setPage(1); setDateTo(e.target.value); }} />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 p-4">
+          <div className="min-w-0">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#0F234F]">Category</label>
+            <Select className="w-full min-w-0" value={categoryId} onChange={(e) => { setPage(1); setCategoryId(e.target.value); }}>
+              <option value="">All categories</option>
+              {flatCategories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="min-w-0">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#0F234F]">Source</label>
+            <Select className="w-full min-w-0" value={source} onChange={(e) => { setPage(1); setSource(e.target.value); }}>
+              <option value="">All sources</option>
+              <option value="tng_import">TNG Import</option>
+              <option value="staff_manual">Staff Manual</option>
+              <option value="manager_manual">Manager Manual</option>
+            </Select>
+          </div>
+
+          <div className="min-w-0">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#0F234F]">From Date</label>
+            <Input type="date" className="w-full min-w-0" value={dateFrom} onChange={(e) => { setPage(1); setDateFrom(e.target.value); }} />
+          </div>
+
+          <div className="min-w-0">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#0F234F]">To Date</label>
+            <Input type="date" className="w-full min-w-0" value={dateTo} onChange={(e) => { setPage(1); setDateTo(e.target.value); }} />
+          </div>
         </CardContent>
       </Card>
 

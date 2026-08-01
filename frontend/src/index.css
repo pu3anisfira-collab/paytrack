@@ -72,3 +72,19 @@ body {
   background: radial-gradient(circle, rgba(45, 107, 255, 0.25) 0%, rgba(21, 199, 184, 0.12) 40%, transparent 70%);
   pointer-events: none;
 }
+
+/* Fix mobile date input browser overflow and styling */
+input[type="date"] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
+  padding: 2px;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}

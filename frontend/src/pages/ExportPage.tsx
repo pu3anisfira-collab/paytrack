@@ -85,22 +85,22 @@ export function ExportPage() {
                 Date Range
               </label>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
+                <div className="min-w-0">
                   <label className="mb-1 block text-xs text-[#5F6C7B]">From Date</label>
                   <Input
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="border-[#D8E0EA] focus:border-[#2F6BFF]"
+                    className="w-full min-w-0 border-[#D8E0EA] focus:border-[#2F6BFF]"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="mb-1 block text-xs text-[#5F6C7B]">To Date</label>
                   <Input
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="border-[#D8E0EA] focus:border-[#2F6BFF]"
+                    className="w-full min-w-0 border-[#D8E0EA] focus:border-[#2F6BFF]"
                   />
                 </div>
               </div>
